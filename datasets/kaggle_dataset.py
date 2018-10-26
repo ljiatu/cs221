@@ -48,7 +48,7 @@ class KaggleTestDataset(Dataset):
             # Skip the header row.
             next(reader)
             for row in reader:
-                if row[1] != -1:
+                if row[1] != '-1':
                     self.labels[row[0]] = Label(*row[1:]).tensor()
 
         self.data = [(k, extract(self.text[k]), v) for k, v in self.labels.items()]
