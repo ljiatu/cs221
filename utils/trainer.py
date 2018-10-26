@@ -30,10 +30,6 @@ class Trainer:
     def train(self):
         start = time.time()
 
-        # Keep track of the best model.
-        # best_val_acc = 0.0
-        # best_model_wts = copy.deepcopy(self.model.state_dict())
-
         for e in range(self.num_epochs):
             print('-' * 10)
             print(f'Epoch {e}')
@@ -45,8 +41,8 @@ class Trainer:
             for t, (text_id, x, y) in enumerate(self.loader_train):
                 self.model.train()
 
-                scores = self.model(x)
-                loss = self.loss_func(scores, y)
+                raw_scores = self.model(x)
+                loss = self.loss_func(raw_scores, y)
 
                 self.optimizer.zero_grad()
                 loss.backward()
@@ -67,27 +63,40 @@ class Trainer:
             print('*' * 30)
             print(f'End of epoch {e} summary')
             print(f'Total samples: {total_samples}')
-            print(f'Training loss: {epoch_training_loss}')
+            print(f'Average training loss: {epoch_training_loss}')
             print(f'Val loss: {epoch_val_loss}')
             print('*' * 30)
 
         time_elapsed = time.time() - start
         print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
 
-    def test(self):
-        print('Test accuracy')
+    def test(self, output_path: str):
+        print('Testing...')
+        self.model.eval()
         self._check_accuracy('test', self.loader_test)
+        self._write_results(output_path)
 
-    def _check_accuracy(self, loader_label: str, loader) -> (float, float):
+    def _check_accuracy(self, loader_label: str, loader: DataLoader) -> float:
         total_num_samples = 0
         total_loss = 0.0
         self.model.eval()
         with torch.no_grad():
-            for x, y in loader:
-                scores = self.model(x)
-                loss = self.loss_func(scores, y)
-                total_loss += loss.item() * x.size(0)
+            for text_id, x, y in loader:
+                raw_scores = self.model(x)
+                loss = self.loss_func(raw_scores, y)
+                total_loss += loss.item()
+                total_num_samples += x.size(0)
 
             total_loss /= total_num_samples
             print(f'{loader_label.capitalize()} Loss: {total_loss}')
             return total_loss
+
+    def _write_results(self, output_path: str):
+        with open(output_path, 'w') as output_file:
+            output_file.write('id,toxic,severe_toxic,obscene,threat,insult,identity_hate\n')
+            with torch.no_grad():
+                for text_id, x, y in self.loader_test:
+                    raw_scores = self.model(x)
+                    probabilities = torch.sigmoid(raw_scores[0])
+                    probabilities_csv = ','.join([str(prob.item()) for prob in probabilities])
+                    output_file.write(f'{text_id[0]},{probabilities_csv}\n')

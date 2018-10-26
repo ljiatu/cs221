@@ -26,7 +26,7 @@ class Label:
         return ','.join([label for label, exists in zip(LABELS, self._exists) if exists])
 
     def tensor(self):
-        return torch.tensor(self._exists)
+        return torch.tensor(self._exists, dtype=torch.float)
 
     @staticmethod
     def _to_bool(indicator: str):
