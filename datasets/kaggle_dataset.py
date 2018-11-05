@@ -10,7 +10,7 @@ class KaggleTrainingDataset(Dataset):
     """
     Kaggle toxic comment classification training dataset.
     """
-    def __init__(self, file_path: str):
+    def __init__(self, file_path: str, extractor):
         """
         :param file_path: Data file path
         """
@@ -18,7 +18,7 @@ class KaggleTrainingDataset(Dataset):
             reader = csv.reader(data_file)
             # Skip the header row.
             next(reader)
-            self.data = [(row[0], extract(row[1]), Label(*row[2:]).tensor()) for row in reader if len(row) == 8]
+            self.data = [(row[0], extractor(row[1]), Label(*row[2:]).tensor()) for row in reader if len(row) == 8]
 
     def __len__(self):
         return len(self.data)
@@ -31,7 +31,7 @@ class KaggleTestDataset(Dataset):
     """
     Kaggel toxic comment classification test dataset.
     """
-    def __init__(self, text_file_path: str, label_file_path: str):
+    def __init__(self, text_file_path: str, label_file_path: str, extractor):
         """
         :param text_file_path: Path to file containing comment text
         :param label_file_path: Path to file containing labels
@@ -51,7 +51,7 @@ class KaggleTestDataset(Dataset):
                 if row[1] != '-1':
                     self.labels[row[0]] = Label(*row[1:]).tensor()
 
-        self.data = [(k, extract(self.text[k]), v) for k, v in self.labels.items()]
+        self.data = [(k, extractor(self.text[k]), v) for k, v in self.labels.items()]
 
     def __len__(self):
         return len(self.data)
