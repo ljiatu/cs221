@@ -11,6 +11,8 @@ from utils.label import LABELS
 from utils.trainer import Trainer
 from utils.word_extractor import BAD_WORDS
 
+from models.Word2VecTrainer import Word2VecTrainer
+
 BATCH_SIZE = 1
 DATA_LOADER_NUM_WORKERS = 1
 TRAIN_DATA_PATH = 'data/train.csv'
@@ -20,7 +22,7 @@ TEST_OUTPUT_PATH = f'outputs/{datetime.now().isoformat()}.txt'
 
 
 def main():
-    model = LinearModel(len(BAD_WORDS), len(LABELS))
+    model = LinearModel(100, 6)
     loss_func = BCEWithLogitsLoss()
     optimizer = optim.Adam(model.parameters(), lr=1e-4)
 
@@ -35,9 +37,10 @@ def main():
 
 
 def _split_data():
-    train_dataset = KaggleTrainingDataset(TRAIN_DATA_PATH)
-    val_dataset = KaggleTrainingDataset(TRAIN_DATA_PATH)
-    test_dataset = KaggleTestDataset(TEST_DATA_PATH, TEST_LABEL_PATH)
+    word2vec_trainer = Word2VecTrainer()
+    train_dataset = KaggleTrainingDataset(TRAIN_DATA_PATH, word2vec_trainer.extract_word_vector)
+    val_dataset = KaggleTrainingDataset(TRAIN_DATA_PATH, word2vec_trainer.extract_word_vector)
+    test_dataset = KaggleTestDataset(TEST_DATA_PATH, TEST_LABEL_PATH, word2vec_trainer.extract_word_vector)
     # Reserve 10% of data for validation purposes.
     num_train = int(len(train_dataset) * 0.9)
     num_val = int(len(val_dataset) * 0.1)
