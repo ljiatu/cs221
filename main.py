@@ -37,7 +37,7 @@ def main():
 
 
 def _split_data():
-    word2vec_trainer = Word2VecTrainer()
+    word2vec_trainer = Word2VecTrainer(train_data_path=TRAIN_DATA_PATH)
     train_dataset = KaggleTrainingDataset(TRAIN_DATA_PATH, word2vec_trainer.extract_word_vector)
     val_dataset = KaggleTrainingDataset(TRAIN_DATA_PATH, word2vec_trainer.extract_word_vector)
     test_dataset = KaggleTestDataset(TEST_DATA_PATH, TEST_LABEL_PATH, word2vec_trainer.extract_word_vector)
