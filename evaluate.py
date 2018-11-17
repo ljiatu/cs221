@@ -3,8 +3,8 @@ from utils.evaluator import evaluate
 
 def main():
     evaluate(
-        '/Users/jiatuliu/Documents/Stanford/CS221/Project/cs221/outputs/2018-10-25T22:21:56.779365.txt',
-        '/Users/jiatuliu/Documents/Stanford/CS221/Project/cs221/data/test_labels.csv'
+        '/Users/e.andrew/Documents/projects/cs221/outputs/2018-11-15T20:10:23.507539.txt',
+        '/Users/e.andrew/Documents/projects/cs221/data/test_labels.csv'
     )
 
 
