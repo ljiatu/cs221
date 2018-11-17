@@ -9,7 +9,7 @@ BAD_WORDS = [
 
 
 class WordCountExtractor(Extractor):
-    def extract(self, text) -> torch.FloatTensor:
+    def extract(self, text: str) -> torch.FloatTensor:
         counts = torch.zeros(len(BAD_WORDS))
         for i, word in enumerate(BAD_WORDS):
             if word in text:

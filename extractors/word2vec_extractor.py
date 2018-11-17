@@ -1,35 +1,33 @@
-from gensim.scripts.glove2word2vec import glove2word2vec
-from gensim.models import KeyedVectors, Word2Vec
-from nltk.tokenize import word_tokenize
+import csv
+import os
+
 import numpy as np
 import torch
-import csv
+from gensim.models import KeyedVectors, Word2Vec
+from nltk.tokenize import word_tokenize
 
 from extractors.extractor import Extractor
 
-GLOVE_DATA_SMALL_PATH = 'glove.6B.100d.txt'
-WORD2VEC_OUTPUT_FILE = GLOVE_DATA_SMALL_PATH + '.model'
+MODEL_FILENAME = 'word2vec_scratch.model'
+DIM = 100
 
 
 class Word2VecExtractor(Extractor):
     def __init__(self, train_data_path=None):
-        self.dim = 100
-
-        if train_data_path is None:
-            # Load pre-trained word embeddings
-            glove2word2vec(GLOVE_DATA_SMALL_PATH, WORD2VEC_OUTPUT_FILE)
-            self.vectors = KeyedVectors.load_word2vec_format(WORD2VEC_OUTPUT_FILE, binary=False)
+        if os.path.isfile(MODEL_FILENAME):
+            self.vectors = KeyedVectors.load(MODEL_FILENAME)
         else:
             with open(train_data_path) as data_file:
                 reader = csv.reader(data_file)
                 # Skip the header row.
                 next(reader)
                 sentences = [word_tokenize(row[1]) for row in reader if len(row) == 8]
-            self.word_model = Word2Vec(sentences=sentences, size=100, window=5, min_count=3, workers=2)
-            self.vectors = self.word_model.wv
+            word_model = Word2Vec(sentences=sentences, size=DIM, window=5, min_count=3, workers=2)
+            word_model.save(MODEL_FILENAME)
+            self.vectors = word_model.wv
 
-    def extract(self, text):
+    def extract(self, text: str):
         words = word_tokenize(text)
-        return torch.FloatTensor(np.mean([self.vectors[w] if w in self.vectors else np.zeros(self.dim)
-                                          for w in words], axis=0))
-
+        return torch.FloatTensor(np.mean(
+            [self.vectors[w] if w in self.vectors else np.zeros(DIM) for w in words], axis=0
+        ))

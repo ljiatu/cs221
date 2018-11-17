@@ -5,5 +5,5 @@ import torch
 
 class Extractor(ABC):
     @abstractmethod
-    def extract(self, text) -> torch.FloatTensor:
+    def extract(self, text: str) -> torch.FloatTensor:
         pass
