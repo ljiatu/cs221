@@ -5,11 +5,13 @@ import numpy as np
 import torch
 import csv
 
+from extractors.extractor import Extractor
+
 GLOVE_DATA_SMALL_PATH = 'glove.6B.100d.txt'
 WORD2VEC_OUTPUT_FILE = GLOVE_DATA_SMALL_PATH + '.model'
 
 
-class Word2VecTrainer:
+class Word2VecExtractor(Extractor):
     def __init__(self, train_data_path=None):
         self.dim = 100
 
@@ -26,7 +28,7 @@ class Word2VecTrainer:
             self.word_model = Word2Vec(sentences=sentences, size=100, window=5, min_count=3, workers=2)
             self.vectors = self.word_model.wv
 
-    def extract_word_vector(self, text):
+    def extract(self, text):
         words = word_tokenize(text)
         return torch.FloatTensor(np.mean([self.vectors[w] if w in self.vectors else np.zeros(self.dim)
                                           for w in words], axis=0))
