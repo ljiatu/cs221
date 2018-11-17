@@ -10,9 +10,7 @@ WORD2VEC_OUTPUT_FILE = GLOVE_DATA_SMALL_PATH + '.model'
 
 
 class Word2VecTrainer:
-
     def __init__(self, train_data_path=None):
-
         self.dim = 100
 
         if train_data_path is None:

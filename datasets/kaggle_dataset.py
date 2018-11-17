@@ -3,7 +3,6 @@ import csv
 from torch.utils.data import Dataset
 
 from utils.label import Label
-from utils.word_extractor import extract
 
 
 class KaggleTrainingDataset(Dataset):
