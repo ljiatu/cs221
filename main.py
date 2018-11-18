@@ -6,7 +6,9 @@ from torch.utils.data import DataLoader
 from torch.utils.data import sampler
 
 from datasets.kaggle_dataset import KaggleTrainingDataset, KaggleTestDataset
+from extractors.word2vec_2d_extractor import Word2Vec2DExtractor
 from extractors.word2vec_extractor import Word2VecExtractor
+from models.cnn import CNN
 from models.linear_model import LinearModel
 from models.neural_net import NeuralNet
 from utils.trainer import Trainer
@@ -20,7 +22,7 @@ TEST_OUTPUT_PATH = f'outputs/{datetime.now().isoformat()}.txt'
 
 
 def main():
-    model = LinearModel(100, 6)
+    model = NeuralNet(100, 6)
     loss_func = BCEWithLogitsLoss()
     optimizer = optim.Adam(model.parameters(), lr=1e-4)
 

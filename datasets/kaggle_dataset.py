@@ -18,7 +18,10 @@ class KaggleTrainingDataset(Dataset):
             reader = csv.reader(data_file)
             # Skip the header row.
             next(reader)
-            self.data = [(row[0], extractor.extract(row[1]), Label(*row[2:]).tensor()) for row in reader if len(row) == 8]
+            self.data = [
+                (row[0], extractor.extract(row[1]), Label(*row[2:]).tensor())
+                for row in reader if len(row) == 8
+            ]
 
     def __len__(self):
         return len(self.data)
