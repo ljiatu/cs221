@@ -4,6 +4,7 @@ from torch.utils.data import Dataset
 
 from utils.label import Label
 from utils.word_extractor import extract
+from nltk import word_tokenize
 
 
 class KaggleTrainingDataset(Dataset):
@@ -51,7 +52,17 @@ class KaggleTestDataset(Dataset):
                 if row[1] != '-1':
                     self.labels[row[0]] = Label(*row[1:]).tensor()
 
-        self.data = [(k, extractor(self.text[k]), v) for k, v in self.labels.items()]
+        data = []
+        window_size = 4
+        for k, v in self.labels.items():
+            words = word_tokenize(self.text[k])
+            windows = [words[max(0, i - window_size):min(len(words) - 1, i + window_size)] for i in range(len(words))]
+            for window in windows:
+                if len(window) > 0:
+                    window_text = ' '.join(window)
+                    data.append((k, extractor(window_text), v))
+        self.data = data
+        #self.data = [(k, extractor(self.text[k]), v) for k, v in self.labels.items()]
 
     def __len__(self):
         return len(self.data)

@@ -33,7 +33,8 @@ def main():
         num_epochs=1, print_every=50000,
     )
     trainer.train()
-    trainer.test(TEST_OUTPUT_PATH)
+    #trainer.test(TEST_OUTPUT_PATH)
+    trainer.check_windows(loader_test, 1000, f'outputs/testing_widows.txt')
 
 
 def _split_data():

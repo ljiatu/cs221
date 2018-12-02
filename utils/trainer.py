@@ -4,7 +4,7 @@ import torch
 from torch.nn import Module
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
-
+from nltk import word_tokenize
 
 class Trainer:
     def __init__(
@@ -90,6 +90,19 @@ class Trainer:
             total_loss /= total_num_samples
             print(f'{loader_label.capitalize()} Loss: {total_loss}')
             return total_loss
+
+    def check_windows(self, loader: DataLoader, num_samples: int, output_path: str):
+        with open(output_path, 'w') as output_file:
+            self.model.eval()
+            samples_read = 0
+            with torch.no_grad():
+                for text_id, x, y in loader:
+                    raw_scores = self.model(x)
+                    output_file.write(f'Text id:{text_id}, Raw Scores:{raw_scores}, True Scores:{y}\n')
+                    samples_read += 1
+                    if samples_read >= num_samples:
+                        break
+            output_file.close()
 
     def _write_results(self, output_path: str):
         with open(output_path, 'w') as output_file:
