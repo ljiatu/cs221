@@ -4,6 +4,7 @@ import torch
 from torch.nn import Module
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
+from collections import defaultdict
 
 
 class Trainer:
@@ -90,6 +91,33 @@ class Trainer:
             total_loss /= total_num_samples
             print(f'{loader_label.capitalize()} Loss: {total_loss}')
             return total_loss
+
+    def check_window_accuracy(self, output_path: str, loader: DataLoader) -> float:
+        threshold = 0.5
+        with open(output_path, 'w') as output_file:
+            self.model.eval()
+            current_scores = defaultdict(list)
+            true_output = defaultdict(list)
+            with torch.no_grad():
+                for text_id, x, y, in loader:
+                    raw_scores = self.model(x)
+                    true_output[text_id] = y
+                    probabilities = torch.sigmoid(raw_scores[0])
+                    output = [int(score > threshold) for score in probabilities]
+                    old_scores = current_scores[text_id]
+                    if len(old_scores) > 0:
+                        current_scores[text_id] = [int(output[i] or old_scores[i]) for i in range(len(output))]
+                    else:
+                        current_scores[text_id] = output
+                    #output_file.write(f'(Window) Text id: {text_id}, y: {y}, Prob: {probabilities}\n')
+            num_samples = len(current_scores)
+            num_correct = 0
+            for k, v in current_scores.items():
+                prediction = [int(i >= 1) for i in v]
+                if prediction == true_output[k]:
+                    num_correct += 1
+            print(f'Samples: {num_samples}, Num correct: {num_correct}, Accuracy: {float(num_correct) / num_samples}')
+                #output_file.write(f'(Final) Text id: {k}, Output: {prediction}\n')
 
     def _write_results(self, output_path: str):
         with open(output_path, 'w') as output_file:
