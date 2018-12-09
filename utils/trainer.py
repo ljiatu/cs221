@@ -102,7 +102,6 @@ class Trainer:
             output_file.write('id,toxic,severe_toxic,obscene,threat,insult,identity_hate\n')
             with torch.no_grad():
                 for text_ids, x, _ in self.loader_test:
-                    x.to(device=self.device)
                     raw_scores = self.model(x)
                     probabilities = torch.sigmoid(raw_scores)
                     for idx, text_id in enumerate(text_ids):
