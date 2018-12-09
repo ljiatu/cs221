@@ -1,12 +1,11 @@
-import csv
-
+import pandas as pd
 from torch.utils.data import Dataset
 
 from extractors.extractor import Extractor
 from utils.label import Label
 
 
-class KaggleTrainingDataset(Dataset):
+class KaggleDataset(Dataset):
     """
     Kaggle toxic comment classification training dataset.
     """
@@ -14,50 +13,14 @@ class KaggleTrainingDataset(Dataset):
         """
         :param file_path: Data file path
         """
-        with open(file_path) as data_file:
-            reader = csv.reader(data_file)
-            # Skip the header row.
-            next(reader)
-            self.data = [
-                (row[0], extractor.extract(row[1]), Label(*row[2:]).tensor())
-                for row in reader if len(row) == 8
-            ]
+        self.comments_df = pd.read_csv(file_path)
+        self.extractor = extractor
 
     def __len__(self):
-        return len(self.data)
+        return len(self.comments_df)
 
     def __getitem__(self, idx: int):
-        return self.data[idx]
-
-
-class KaggleTestDataset(Dataset):
-    """
-    Kaggel toxic comment classification test dataset.
-    """
-    def __init__(self, text_file_path: str, label_file_path: str, extractor: Extractor):
-        """
-        :param text_file_path: Path to file containing comment text
-        :param label_file_path: Path to file containing labels
-        """
-        with open(text_file_path) as text_file:
-            reader = csv.reader(text_file)
-            # Skip the header row.
-            next(reader)
-            self.text = {row[0]: row[1] for row in reader}
-
-        self.labels = {}
-        with open(label_file_path) as label_file:
-            reader = csv.reader(label_file)
-            # Skip the header row.
-            next(reader)
-            for row in reader:
-                if row[1] != '-1':
-                    self.labels[row[0]] = Label(*row[1:]).tensor()
-
-        self.data = [(k, extractor.extract(self.text[k]), v) for k, v in self.labels.items()]
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, idx: int):
-        return self.data[idx]
+        text_id = self.comments_df.iloc[idx, 0]
+        word_vec = self.extractor.extract(self.comments_df.iloc[idx, 1])
+        labels = Label(*self.comments_df.iloc[idx, 2:]).tensor()
+        return text_id, word_vec, labels

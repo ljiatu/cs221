@@ -38,7 +38,7 @@ class Trainer:
             running_loss = 0.0
             total_samples = 0
 
-            for t, (text_id, x, y) in enumerate(self.loader_train):
+            for t, (_, x, y) in enumerate(self.loader_train):
                 self.model.train()
 
                 raw_scores = self.model(x)
@@ -81,7 +81,7 @@ class Trainer:
         total_loss = 0.0
         self.model.eval()
         with torch.no_grad():
-            for text_id, x, y in loader:
+            for _, x, y in loader:
                 raw_scores = self.model(x)
                 loss = self.loss_func(raw_scores, y)
                 total_loss += loss.item()
@@ -95,8 +95,9 @@ class Trainer:
         with open(output_path, 'w') as output_file:
             output_file.write('id,toxic,severe_toxic,obscene,threat,insult,identity_hate\n')
             with torch.no_grad():
-                for text_id, x, y in self.loader_test:
+                for text_ids, x, _ in self.loader_test:
                     raw_scores = self.model(x)
-                    probabilities = torch.sigmoid(raw_scores[0])
-                    probabilities_csv = ','.join([str(prob.item()) for prob in probabilities])
-                    output_file.write(f'{text_id[0]},{probabilities_csv}\n')
+                    probabilities = torch.sigmoid(raw_scores)
+                    for idx, text_id in enumerate(text_ids):
+                        probabilities_csv = ','.join([str(prob.item()) for prob in probabilities[idx]])
+                        output_file.write(f'{text_id},{probabilities_csv}\n')

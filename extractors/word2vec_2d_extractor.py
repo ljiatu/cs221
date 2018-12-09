@@ -9,7 +9,7 @@ from extractors.extractor import Extractor
 
 MODEL_FILENAME = 'word2vec_scratch.model'
 DIM = 100
-NUM_WORDS = 50
+NUM_WORDS = 100
 
 
 class Word2Vec2DExtractor(Extractor):
