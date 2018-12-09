@@ -34,7 +34,7 @@ def main():
 
     loader_train, loader_val, loader_test = _split_data()
     trainer = Trainer(
-        model, loss_func, optimizer,
+        model, loss_func, optimizer, device,
         loader_train, loader_val, loader_test,
         num_epochs=1, print_every=50000,
     )

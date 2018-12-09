@@ -12,6 +12,7 @@ class Trainer:
             model: Module,
             loss_func: Module,
             optimizer: Optimizer,
+            device: torch.device,
             loader_train: DataLoader,
             loader_val: DataLoader,
             loader_test: DataLoader,
@@ -21,6 +22,7 @@ class Trainer:
         self.model = model
         self.loss_func = loss_func
         self.optimizer = optimizer
+        self.device = device
         self.loader_train = loader_train
         self.loader_val = loader_val
         self.loader_test = loader_test
@@ -40,6 +42,8 @@ class Trainer:
 
             for t, (_, x, y) in enumerate(self.loader_train):
                 self.model.train()
+                x = x.to(device=self.device)
+                y = y.to(device=self.device)
 
                 raw_scores = self.model(x)
                 loss = self.loss_func(raw_scores, y)
@@ -82,6 +86,8 @@ class Trainer:
         self.model.eval()
         with torch.no_grad():
             for _, x, y in loader:
+                x = x.to(device=self.device)
+                y = y.to(device=self.device)
                 raw_scores = self.model(x)
                 loss = self.loss_func(raw_scores, y)
                 total_loss += loss.item()
@@ -96,6 +102,7 @@ class Trainer:
             output_file.write('id,toxic,severe_toxic,obscene,threat,insult,identity_hate\n')
             with torch.no_grad():
                 for text_ids, x, _ in self.loader_test:
+                    x.to(device=self.device)
                     raw_scores = self.model(x)
                     probabilities = torch.sigmoid(raw_scores)
                     for idx, text_id in enumerate(text_ids):
