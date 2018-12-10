@@ -14,8 +14,6 @@ class CNN(Module):
     def __init__(self, d_in: int, d_out: int):
         super(CNN, self).__init__()
 
-        self.d_out = d_out
-
         # 3 filters in total, 1 for each of 1, 2 and 5 words.
         self.filter_1word = Conv2d(1, 1, (FILTER_SIZES[0], 1))
         self.filter_2words = Conv2d(1, 1, (FILTER_SIZES[1], 1))
@@ -44,5 +42,4 @@ class CNN(Module):
         # Concatenate the three tensors together.
         concat_output = torch.cat((pool_1word_out, pool_2words_out, pool_5words_out), 3)
         fc_out = self.fc_layer(concat_output).clamp(min=0)
-        # Reshape the vector have the same dimension as the output.
-        return self.output_layer(fc_out).reshape(1, self.d_out)
+        return self.output_layer(fc_out).squeeze()
