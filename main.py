@@ -10,6 +10,7 @@ from datasets.kaggle_dataset import KaggleDataset
 from extractors.word2vec_2d_extractor import Word2Vec2DExtractor
 from extractors.word2vec_extractor import Word2VecExtractor
 from models.cnn import CNN
+from models.kim_cnn import KimCNN
 from models.linear_model import LinearModel
 from models.neural_net import NeuralNet
 from utils.trainer import Trainer
@@ -28,7 +29,7 @@ def main():
         device = torch.device('cpu')
     print(f'Using device {device}')
 
-    model = NeuralNet(100, 6).to(device=device)
+    model = KimCNN(100, 6).to(device=device)
     loss_func = BCEWithLogitsLoss().to(device=device)
     optimizer = optim.Adam(model.parameters(), lr=1e-4)
 
@@ -43,7 +44,7 @@ def main():
 
 
 def _split_data():
-    word2vec_extractor = Word2VecExtractor(train_data_path=TRAIN_DATA_PATH)
+    word2vec_extractor = Word2Vec2DExtractor(train_data_path=TRAIN_DATA_PATH)
     train_dataset = KaggleDataset(TRAIN_DATA_PATH, word2vec_extractor)
     val_dataset = KaggleDataset(TRAIN_DATA_PATH, word2vec_extractor)
     test_dataset = KaggleDataset(TEST_DATA_PATH, word2vec_extractor)
