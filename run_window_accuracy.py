@@ -19,6 +19,8 @@ def run_window_accuracy(model_path: str):
         device = torch.device('cuda')
     else:
         device = torch.device('cpu')
+    print(f'Using device {device}')
+
     test_data = _test_data()
     window_accuracy = WindowAccuracy(model_path=model_path, loader=test_data, device=device)
     window_accuracy.check_window_accuracy('outputs/test_window_two.txt')
