@@ -31,7 +31,7 @@ def main():
 
     model = KimCNN(100, 6).to(device=device)
     loss_func = BCEWithLogitsLoss().to(device=device)
-    optimizer = optim.Adam(model.parameters(), lr=2e-3)
+    optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
     loader_train, loader_val, loader_test = _split_data()
     trainer = Trainer(
