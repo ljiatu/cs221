@@ -3,15 +3,12 @@ from collections import defaultdict
 import torch
 from torch.utils.data import DataLoader
 
-from models.kim_cnn import KimCNN
-
 
 class WindowAccuracy:
     def __init__(self, model_path: str, loader: DataLoader, device: torch.device):
         self.loader = loader
         self.device = device
-        self.model = KimCNN(100, 6)
-        self.model.load(torch.load(model_path)).to(device=device)
+        self.model = torch.load(model_path).to(device=device)
 
     def check_window_accuracy(self, output_path: str):
         threshold = 0.5
