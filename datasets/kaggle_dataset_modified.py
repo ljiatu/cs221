@@ -27,7 +27,7 @@ class KaggleTestDatasetModified(Dataset):
             offset = query_idx - self.max_ranges[idx - 1]
         return idx, offset
 
-    def find_window(self, idx, offset):
+    def find_window(self, idx: int, offset: int):
         full_text = word_tokenize(self.comments_df.iloc[idx, 1])
         comment = full_text[max(0, offset - WINDOW_SIZE):min(len(full_text) - 1, offset + WINDOW_SIZE)]
         return comment
@@ -50,5 +50,5 @@ class KaggleTestDatasetModified(Dataset):
         text_id = self.comments_df.iloc[real_idx, 0]
         comment_window = self.find_window(real_idx, offset)
         word_vec = self.extractor.extract(comment_window)
-        labels = Label(*self.comments_df.iloc[idx, 2:]).tensor()
+        labels = Label(*self.comments_df.iloc[real_idx, 2:]).tensor()
         return text_id, word_vec, labels
