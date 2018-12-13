@@ -1,6 +1,6 @@
 import bisect
 
-from nltk import word_tokenize
+from nltk.tokenize import word_tokenize
 import pandas as pd
 from torch.utils.data import Dataset
 
