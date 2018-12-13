@@ -3,7 +3,6 @@ import sys
 
 from utils.evaluator import evaluate
 
-
 def main():
     output_file_name = sys.argv[1]
     evaluate(

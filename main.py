@@ -16,7 +16,7 @@ from models.neural_net import NeuralNet
 from utils.trainer import Trainer
 
 BATCH_SIZE = 25
-DATA_LOADER_NUM_WORKERS = 2
+DATA_LOADER_NUM_WORKERS = 5
 TRAIN_DATA_PATH = 'data/train.csv'
 TEST_DATA_PATH = 'data/processed.csv'
 TEST_OUTPUT_PATH = f'outputs/{datetime.now().isoformat()}.txt'
@@ -37,7 +37,7 @@ def main():
     trainer = Trainer(
         model, loss_func, optimizer, device, 'cnn',
         loader_train, loader_val, loader_test,
-        num_epochs=1, print_every=50000,
+        num_epochs=5, print_every=50000,
     )
     trainer.train()
     trainer.test(TEST_OUTPUT_PATH)
