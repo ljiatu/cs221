@@ -9,7 +9,6 @@ from extractors.window_accuracy import WindowAccuracy
 
 TRAIN_DATA_PATH = 'data/train.csv'
 TEST_DATA_PATH = 'data/processed.csv'
-TEST_LABEL_PATH = 'data/test_labels.csv'
 
 BATCH_SIZE = 25
 DATA_LOADER_NUM_WORKERS = 5
@@ -27,7 +26,7 @@ def run_window_accuracy(model_path: str):
 
 def _test_data():
     word2vec_extractor = Word2Vec2DExtractor(train_data_path=TRAIN_DATA_PATH)
-    test_dataset = KaggleTestDatasetModified(TEST_DATA_PATH, TEST_LABEL_PATH, word2vec_extractor)
+    test_dataset = KaggleTestDatasetModified(TEST_DATA_PATH, word2vec_extractor)
     loader_test = DataLoader(
         test_dataset,
         batch_size=BATCH_SIZE,
