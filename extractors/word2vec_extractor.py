@@ -8,14 +8,15 @@ from nltk.tokenize import word_tokenize
 
 from extractors.extractor import Extractor
 
-MODEL_FILENAME = 'word2vec_scratch.model'
+MODEL_FILENAME = 'glove.twitter.27B.100d.word2vec.txt'
+# 'word2vec_scratch.model'
 DIM = 100
 
 
 class Word2VecExtractor(Extractor):
     def __init__(self, train_data_path=None):
         if os.path.isfile(MODEL_FILENAME):
-            self.vectors = KeyedVectors.load(MODEL_FILENAME)
+            self.vectors = KeyedVectors.load_word2vec_format(MODEL_FILENAME)
         else:
             with open(train_data_path) as data_file:
                 reader = csv.reader(data_file)

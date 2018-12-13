@@ -7,8 +7,8 @@ from nltk.tokenize import word_tokenize
 
 from extractors.extractor import Extractor
 
-MODEL_FILENAME = 'word2vec_scratch.model'
-DIM = 100
+MODEL_FILENAME = ''
+DIM = 200
 NUM_WORDS = 100
 
 
