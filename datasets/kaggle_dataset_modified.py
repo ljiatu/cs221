@@ -20,7 +20,7 @@ class KaggleTestDatasetModified(Dataset):
         self.max_ranges = self.compute_max_range()
 
     def find_index_from_query(self, query_idx: int):
-        idx = bisect.bisect(query_idx, self.max_ranges)
+        idx = bisect.bisect(self.max_ranges, query_idx)
         if idx == 0:
             offset = query_idx
         else:
