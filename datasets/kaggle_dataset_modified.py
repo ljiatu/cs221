@@ -1,22 +1,20 @@
+import bisect
+
 from nltk import word_tokenize
-import csv
+import pandas as pd
 from torch.utils.data import Dataset
+
 from extractors.extractor import Extractor
 from utils.label import Label
-import pandas as pd
-
-from nltk import word_tokenize
-
-import bisect
 
 WINDOW_SIZE = 2
 
+
 class KaggleTestDatasetModified(Dataset):
     """
-    Kaggel toxic comment classification tes t dataset.
+    Dataset for toxicity source identification.
     """
     def __init__(self, file_path: str, extractor: Extractor):
-        self.original_df = pd.read_csv(file_path)
         self.comments_df = pd.read_csv(file_path)
         self.extractor = extractor
         self.max_ranges = self.compute_max_range()
@@ -52,5 +50,5 @@ class KaggleTestDatasetModified(Dataset):
         text_id = self.comments_df.iloc[real_idx, 0]
         comment_window = self.find_window(real_idx, offset)
         word_vec = self.extractor.extract(comment_window)
-        labels = Label(self.comments_df.iloc[idx, 2:]).tensor()
+        labels = Label(*self.comments_df.iloc[idx, 2:]).tensor()
         return text_id, word_vec, labels
