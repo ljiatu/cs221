@@ -17,7 +17,7 @@ class WindowAccuracy:
             current_scores = defaultdict(list)
             true_output = defaultdict(list)
             with torch.no_grad():
-                for text_ids, xs, ys, in self.loader:
+                for text_ids, xs, ys in self.loader:
                     xs = xs.to(device=self.device)
                     ys = ys.to(device=self.device)
                     raw_scores = self.model(xs)
