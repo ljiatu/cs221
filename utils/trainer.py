@@ -1,3 +1,4 @@
+from datetime import datetime
 import time
 
 import torch
@@ -13,6 +14,7 @@ class Trainer:
             loss_func: Module,
             optimizer: Optimizer,
             device: torch.device,
+            model_type: str,
             loader_train: DataLoader,
             loader_val: DataLoader,
             loader_test: DataLoader,
@@ -23,6 +25,7 @@ class Trainer:
         self.loss_func = loss_func
         self.optimizer = optimizer
         self.device = device
+        self.model_type = model_type
         self.loader_train = loader_train
         self.loader_val = loader_val
         self.loader_test = loader_test
@@ -64,6 +67,8 @@ class Trainer:
 
             epoch_training_loss = running_loss / total_samples
             epoch_val_loss = self._check_accuracy('validation', self.loader_val)
+            print('Saving model...')
+            torch.save(self.model, f'saved_models/{self.model_type}_{datetime.now().isoformat()}.model')
             print('*' * 30)
             print(f'End of epoch {e} summary')
             print(f'Total samples: {total_samples}')

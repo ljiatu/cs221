@@ -1,6 +1,3 @@
-from collections import Counter
-
-import matplotlib.pylab as plt
 import pandas as pd
 
 TRAIN_DATA_FILE_PATH = 'data/train.csv'
@@ -14,9 +11,10 @@ def main():
         lengths.append(len(row[1].split()))
         # counter[len(row[1].split())] += 1
 
-    lengths.sort(reverse=True)
-    print(lengths.index(50))
+    lengths.sort()
+    print(lengths.index(150))
     print(len(lengths))
+    print(lengths.index(150) / len(lengths))
     # lists = sorted(counter.items())[:100]
     # x, y = zip(*lists)
     # plt.bar(x, y)
