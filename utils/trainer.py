@@ -67,8 +67,6 @@ class Trainer:
 
             epoch_training_loss = running_loss / total_samples
             epoch_val_loss = self._check_accuracy('validation', self.loader_val)
-            print('Saving model...')
-            torch.save(self.model, f'saved_models/{self.model_type}_{datetime.now().isoformat()}.model')
             print('*' * 30)
             print(f'End of epoch {e} summary')
             print(f'Total samples: {total_samples}')
@@ -77,6 +75,8 @@ class Trainer:
             print('*' * 30)
 
         time_elapsed = time.time() - start
+        print('Saving model...')
+        torch.save(self.model, f'saved_models/{self.model_type}_{datetime.now().isoformat()}.model')
         print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
 
     def test(self, output_path: str):
