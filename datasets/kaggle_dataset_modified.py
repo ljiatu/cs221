@@ -5,27 +5,52 @@ from extractors.extractor import Extractor
 from utils.label import Label
 import pandas as pd
 
+from nltk import word_tokenize
+
+import bisect
+
+WINDOW_SIZE = 2
+
 class KaggleTestDatasetModified(Dataset):
     """
     Kaggel toxic comment classification tes t dataset.
     """
     def __init__(self, file_path: str, extractor: Extractor):
-
         self.original_df = pd.read_csv(file_path)
+        self.comments_df = pd.read_csv(file_path)
+        self.extractor = extractor
+        self.max_ranges = self.compute_max_range()
 
-        data = []
-        window_size = 2
-        for k, v in self.labels.items():
-            words = word_tokenize(self.text[k])
-            windows = [words[max(0, i - window_size):min(len(words) - 1, i + window_size)] for i in range(len(words))]
-            for window in windows:
-                if len(window) > 0:
-                    window_text = ' '.join(window)
-                    data.append((k, extractor.extract(window_text), v))
-        self.data = data
+    def find_index_from_query(self, query_idx: int):
+        idx = bisect.bisect(query_idx, self.max_ranges)
+        if idx == 0:
+            offset = query_idx
+        else:
+            offset = query_idx - self.max_ranges[idx - 1]
+        return idx, offset
+
+    def find_window(self, idx, offset):
+        full_text = word_tokenize(self.comments_df.iloc[idx, 1])
+        comment = full_text[max(0, offset - WINDOW_SIZE):min(len(full_text) - 1, offset + WINDOW_SIZE)]
+        return comment
+
+    def compute_max_range(self):
+        max_ranges = []
+        prev_count = 0
+        for index, row in self.comments_df.iterrows():
+            word_count = len(word_tokenize(row['comment_text']))
+            prev_count += word_count
+            max_ranges.append(prev_count)
+
+        return max_ranges
 
     def __len__(self):
-        return len(self.data)
+        return self.max_ranges[-1]
 
     def __getitem__(self, idx: int):
-        return self.data[idx]
+        real_idx, offset = self.find_index_from_query(idx)
+        text_id = self.comments_df.iloc[real_idx, 0]
+        comment_window = self.find_window(real_idx, offset)
+        word_vec = self.extractor.extract(comment_window)
+        labels = Label(self.comments_df.iloc[idx, 2:]).tensor()
+        return text_id, word_vec, labels
