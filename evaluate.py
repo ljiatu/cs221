@@ -1,11 +1,13 @@
 import os
+import sys
 
 from utils.evaluator import evaluate
 
 
 def main():
+    output_file_name = sys.argv[1]
     evaluate(
-        f'{os.getcwd()}/outputs/2018-12-09T00:45:43.323536.txt',
+        f'{os.getcwd()}/outputs/{output_file_name}',
         f'{os.getcwd()}/data/test_labels.csv'
     )
 
