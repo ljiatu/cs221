@@ -30,7 +30,7 @@ class KaggleTestDatasetModified(Dataset):
     def find_window(self, idx: int, offset: int):
         full_text = word_tokenize(self.comments_df.iloc[idx, 1])
         comment = full_text[max(0, offset - WINDOW_SIZE):min(len(full_text) - 1, offset + WINDOW_SIZE)]
-        return comment
+        return ' '.join(comment)
 
     def compute_max_range(self):
         max_ranges = []
