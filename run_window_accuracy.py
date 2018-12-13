@@ -27,8 +27,8 @@ def run_window_accuracy(model_path: str):
 
 
 def _test_data():
-    word2vec_extractor = Word2Vec2DExtractor(train_data_path=TRAIN_DATA_PATH)
-    test_dataset = KaggleTestDatasetModified(TEST_DATA_PATH, word2vec_extractor)
+    extractor = Word2Vec2DExtractor(train_data_path=TRAIN_DATA_PATH)
+    test_dataset = KaggleTestDatasetModified(TEST_DATA_PATH, extractor)
     loader_test = DataLoader(
         test_dataset,
         batch_size=BATCH_SIZE,
