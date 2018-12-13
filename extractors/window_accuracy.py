@@ -11,7 +11,7 @@ class WindowAccuracy:
         self.loader = loader
         self.device = device
         self.model = KimCNN(100, 6)
-        self.model.load_state_dict(torch.load(model_path)).to(device=device)
+        self.model.load(torch.load(model_path)).to(device=device)
 
     def check_window_accuracy(self, output_path: str):
         threshold = 0.5
