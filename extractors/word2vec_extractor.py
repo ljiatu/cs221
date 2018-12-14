@@ -28,6 +28,10 @@ class Word2VecExtractor(Extractor):
 
     def extract(self, text: str) -> torch.FloatTensor:
         words = word_tokenize(text)
-        return torch.FloatTensor(np.mean(
-            [self.vectors[w] if w in self.vectors else np.zeros(DIM) for w in words], axis=0
-        ))
+        try:
+            return torch.FloatTensor(np.mean(
+                [self.vectors[w] if w in self.vectors else np.zeros(DIM) for w in words], axis=0
+            ))
+        except Exception:
+            print(words)
+            return torch.zeros(100)

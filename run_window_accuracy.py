@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from datasets.kaggle_dataset_modified import KaggleTestDatasetModified
+from extractors.word2vec_extractor import Word2VecExtractor
 from extractors.word2vec_2d_extractor import Word2Vec2DExtractor
 from extractors.window_accuracy import WindowAccuracy
 
@@ -23,11 +24,11 @@ def run_window_accuracy(model_path: str):
 
     test_data = _test_data()
     window_accuracy = WindowAccuracy(model_path=model_path, loader=test_data, device=device)
-    window_accuracy.check_window_accuracy('outputs/test_window_two.txt')
+    window_accuracy.check_window_accuracy('outputs/nn_test_window_two.txt')
 
 
 def _test_data():
-    extractor = Word2Vec2DExtractor(train_data_path=TRAIN_DATA_PATH)
+    extractor = Word2VecExtractor(train_data_path=TRAIN_DATA_PATH)
     test_dataset = KaggleTestDatasetModified(TEST_DATA_PATH, extractor)
     loader_test = DataLoader(
         test_dataset,
