@@ -1,6 +1,24 @@
 # cs221
 CS221 Project
 
+# How to run
+
+- First ensure that all requirements are installed (PyTorch, nltk, pandas, etc.)
+- Download the necessary data files from https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/data 
+  - `test.csv`
+  - `test_labels.csv`
+  - `train.csv`
+- In order to get the data into the format we used for the testing you need to run `preprocess.py` to a convenient location (this merges the test and test_labels files)
+- In `main.py` ensure that the `TRAIN_DATA_PATH`, `TEST_DATA_PATH`, and `TEST_OUTPUT_PATH` are set to the correct locations on your machine.
+  - `TRAIN_DATA_PATH` should point to `train.csv`
+  - `TEST_DATA_PATH` should point to `processed.csv`
+- Next, you can run `main.py` to generate an output file to the `TEST_OUTPUT_PATH`
+  - To test different models simply replace the `model = ...` line with any of the other models (`CNN`, `KIMCNN`, `LinearModel`, and `NeuralNet`)
+- Finally, run `evaluate.py` to test the output file against the `test_labels.csv` to get final results printed in the console.
+- Additionally, to check the window accuracy for our sliding window accuracy you can run the `run_window_accuracy.py` file.
+  - Before doing this you should ensure that the saved model path set in `trainer.py` on line 79 `torch.save(...)` is set correctly for your machine. 
+- After running this file you should see the overall accuracy printed to the console. 
+
 # Folders and files
 
 ### datasets
