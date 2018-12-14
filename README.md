@@ -52,10 +52,6 @@ CS221 Project
 
 - `neural_net.py`: simple neural net model used with 2-4 layers
 
-### outputs
-
-- Classification outputs
-
 ### utils
 
 - `evaluator.py`: evaluates a model output file against the results using the ROC AUC score 
